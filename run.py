@@ -59,7 +59,7 @@ def main():
         # from the loaded dataset
         eval_split = 'train'
     else:
-        default_datasets = {'qa': ('squad',), 'nli': ('snli',)}
+        default_datasets = {'qa': ('squad',), 'nli': ('snli',), 'adv': ('adversarial_qa', 'adversarialQA')}
         dataset_id = tuple(args.dataset.split(':')) if args.dataset is not None else \
             default_datasets[args.task]
         # MNLI has two validation splits (one with matched domains and one with mismatched domains). Most datasets just have one "validation" split
