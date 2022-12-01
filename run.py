@@ -187,7 +187,7 @@ def main():
                 answers = i['answers']
                 ans_list = answers['text']
                 pred = j['prediction_text']
-                if pred not in ans_list:
+                if pred in ans_list:
                     print(ans_list)
                     print(pred)
 
