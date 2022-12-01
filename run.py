@@ -180,6 +180,16 @@ def main():
 
         print('Evaluation results:')
         print(results)
+        labels = eval_predictions.label_ids
+        preds = eval_predictions.predictions
+        for i in labels:
+            for j in preds:
+                answers = i['answers']
+                ans_list = answers['text']
+                pred = j['prediction_text']
+                if pred not in ans_list:
+                    print(ans_list)
+                    print(pred)
 
         os.makedirs(training_args.output_dir, exist_ok=True)
 
