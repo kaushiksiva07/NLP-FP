@@ -182,7 +182,7 @@ def main():
         print(results)
         labels = eval_predictions.label_ids
         preds = eval_predictions.predictions
-                if args.dataset == 'squad':
+        if args.dataset == 'squad':
             with open("file.txt", "w", encoding="utf-8") as output:
                 for i in labels:
                     for j in preds:
