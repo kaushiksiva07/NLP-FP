@@ -187,9 +187,12 @@ def main():
                 for i in labels:
                     for j in preds:
                         answers = i['answers']
+                        id = i['id']
                         ans_list = answers['text']
                         pred = j['prediction_text']
                         if pred in ans_list:
+                            output.write(id)
+                            output.write('\n')
                             output.write(str(ans_list))
                             output.write('\n')
                             output.write(pred)
@@ -200,9 +203,12 @@ def main():
                 for i in labels:
                     for j in preds:
                         answers = i['answers']
+                        id = i['id']
                         ans_list = answers['text']
                         pred = j['prediction_text']
                         if pred in ans_list:
+                            output.write(id)
+                            output.write('\n')
                             output.write(str(ans_list))
                             output.write('\n')
                             output.write(pred)
