@@ -182,14 +182,31 @@ def main():
         print(results)
         labels = eval_predictions.label_ids
         preds = eval_predictions.predictions
-        for i in labels:
-            for j in preds:
-                answers = i['answers']
-                ans_list = answers['text']
-                pred = j['prediction_text']
-                if pred in ans_list:
-                    print(ans_list)
-                    print(pred)
+                if args.dataset == 'squad':
+            with open("file.txt", "w", encoding="utf-8") as output:
+                for i in labels:
+                    for j in preds:
+                        answers = i['answers']
+                        ans_list = answers['text']
+                        pred = j['prediction_text']
+                        if pred in ans_list:
+                            output.write(str(ans_list))
+                            output.write('\n')
+                            output.write(pred)
+                            output.write('\n')
+
+        elif args.dataset == 'adv':
+            with open("file2.txt", "w", encoding="utf-8") as output:
+                for i in labels:
+                    for j in preds:
+                        answers = i['answers']
+                        ans_list = answers['text']
+                        pred = j['prediction_text']
+                        if pred in ans_list:
+                            output.write(str(ans_list))
+                            output.write('\n')
+                            output.write(pred)
+                            output.write('\n')
 
         os.makedirs(training_args.output_dir, exist_ok=True)
 
