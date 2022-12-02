@@ -200,19 +200,21 @@ def main():
 
         elif args.dataset == 'adv':
             with open("file2.txt", "w", encoding="utf-8") as output:
-                for i in labels:
-                    for j in preds:
-                        answers = i['answers']
-                        id = i['id']
-                        ans_list = answers['text']
-                        pred = j['prediction_text']
-                        if pred in ans_list:
-                            output.write(id)
-                            output.write('\n')
-                            output.write(str(ans_list))
-                            output.write('\n')
-                            output.write(pred)
-                            output.write('\n')
+                with open("file.txt", "r", encoding="utf-8") as output2:
+                    for i in labels:
+                        for j in preds:
+                            answers = i['answers']
+                            id = i['id']
+                            ans_list = answers['text']
+                            pred = j['prediction_text']
+                            if id in output2.read():
+                                if pred in ans_list:
+                                    output.write(id)
+                                    output.write('\n')
+                                    output.write(str(ans_list))
+                                    output.write('\n')
+                                    output.write(pred)
+                                    output.write('\n')
 
         os.makedirs(training_args.output_dir, exist_ok=True)
 
