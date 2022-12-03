@@ -66,7 +66,7 @@ def main():
         eval_split = 'validation_matched' if dataset_id == ('glue', 'mnli') else 'validation'
         # Load the raw data
         if args.dataset == 'adv':
-            dataset = datasets.load_dataset('adversarial_qa', 'adversarialQA')
+            dataset = datasets.load_dataset('squad_adversarial', 'AddSent')
         else:
             dataset = datasets.load_dataset(*dataset_id)
     
