@@ -201,20 +201,18 @@ def main():
         elif args.dataset == 'adv':
             with open("file2.txt", "w", encoding="utf-8") as output:
                 with open("file.txt", "r", encoding="utf-8") as output2:
-                    for i in labels:
-                        for j in preds:
-                            answers = i['answers']
-                            id = i['id']
-                            ans_list = answers['text']
-                            pred = j['prediction_text']
-                            if id in output2.read():
-                                if pred not in ans_list:
-                                    output.write(id)
-                                    output.write('\n')
-                                    output.write(str(ans_list))
-                                    output.write('\n')
-                                    output.write(pred)
-                                    output.write('\n')
+                    for index, value in enumerate(labels):
+                        id = value['id']
+                        answers = value['answers']
+                        ans_list = answers['text']
+                        pred = preds[index]
+                        text = pred['prediction_text']
+                        output.write(id)
+                        output.write('\n')
+                        output.write(str(ans_list))
+                        output.write('\n')
+                        output.write(text)
+                        output.write('\n')
 
         os.makedirs(training_args.output_dir, exist_ok=True)
 
