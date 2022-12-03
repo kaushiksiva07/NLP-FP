@@ -208,7 +208,7 @@ def main():
                             ans_list = answers['text']
                             pred = j['prediction_text']
                             if id in output2.read():
-                                if pred in ans_list:
+                                if pred not in ans_list:
                                     output.write(id)
                                     output.write('\n')
                                     output.write(str(ans_list))
