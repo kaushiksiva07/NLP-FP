@@ -66,7 +66,9 @@ def main():
         eval_split = 'validation_matched' if dataset_id == ('glue', 'mnli') else 'validation'
         # Load the raw data
         if args.dataset == 'adv':
-            dataset = datasets.load_dataset('squad_adversarial', 'AddSent')
+            dataset2_train = datasets.load_dataset('squad_adversarial', 'AddSent', split='validation[0:1000]')
+            dataset2_eval = datasets.load_dataset('squad_adversarial', 'AddSent', split='validation[1000:]')
+            dataset = datasets.load_dataset('squad')
         else:
             dataset = datasets.load_dataset(*dataset_id)
     
@@ -207,29 +209,80 @@ def main():
                           output.write('\n')
 
         elif args.dataset == 'adv':
-            with open("file2.txt", "w", encoding="utf-8") as output:
-                with open("file.txt", "r", encoding="utf-8") as output2:
-                    for index, value in enumerate(labels):
-                        id = value['id']
-                        answers = value['answers']
-                        ans_list = answers['text']
-                        pred = preds[index]
-                        text = pred['prediction_text']
-                        example = eval_dataset[index]
-                        question = example['question']
-                        context = example['context']
-                        if question in output2.read():
-                          output.write(id)
-                          output.write('\n')
-                          output.write(question)
-                          output.write('\n')
-                          output.write(context)
-                          output.write('\n')
-                          output.write(str(ans_list))
-                          output.write('\n')
-                          output.write(text)
-                          output.write('\n')
-                          output.write('\n')
+            num_count = 0
+            example_count = 0
+            add_count = 0
+            len_diff_count = 0
+            word_diff_count = 0
+            ques_not = 0
+            pred_not = 0
+            match_len_count = 0
+            words_in_question_count = 0
+            words_in_add_count = 0
+            with open("file2.txt", "w", encoding="utf-8") as output, open("file.txt") as output2:
+                for index, value in enumerate(labels):
+                    id = value['id']
+                    answers = value['answers']
+                    ans_list = answers['text']
+                    pred = preds[index]
+                    text = pred['prediction_text']
+                    example = eval_dataset[index]
+                    question = example['question']
+                    context = example['context']
+                    period_count = context.count('.') - 1
+                    add_sent = context.split('.', period_count)[-1]
+                    example['prediction'] = text
+                    words_in_question = question.split()
+                    words_in_add = add_sent.split()
+                    match_words = set(words_in_question) & set(words_in_add)
+                    match_len = len(match_words)
+
+                    if '-conf-' in id:
+                        if text not in ans_list:
+                            example_count += 1
+                            len_diff = abs(len(add_sent) - len(question))
+                            word_diff = abs(len(add_sent.split()) - len(question.split()))
+                            len_diff_count += len_diff
+                            word_diff_count += word_diff
+                            match_len_count += match_len
+                            words_in_question_count += len(words_in_question)
+                            words_in_add_count += len(words_in_add)
+
+                            if any(char.isdigit() for char in text):
+                                num_count += 1
+                            if text in add_sent:
+                                add_count += 1
+                            if ' not ' in question:
+                                ques_not += 1
+                            if ' not ' in text:
+                                pred_not += 1
+
+                            # # output.write(id)
+                            # # output.write('\n')
+                            # output.write(question)
+                            # output.write('\n')
+                            # output.write(add_sent)
+                            # output.write('\n')
+                            # # output.write(str(ans_list))
+                            # # output.write('\n')
+                            # output.write(text)
+                            # output.write('\n')
+                            # output.write('\n')
+            print("num_count:", num_count)
+            print("example_count:", example_count)
+            print("add_count:", add_count)
+            avg_len_diff = (len_diff_count / example_count)
+            avg_word_diff = (word_diff_count / example_count)
+            print("avg_len_diff:", avg_len_diff)
+            print("avg_word_diff:", avg_word_diff)
+            print("ques_not:", ques_not)
+            print("pred_not:", pred_not)
+            avg_match_len = (match_len_count / example_count)
+            print("avg_match_len:", avg_match_len)
+            avg_words_in_question = (words_in_question_count / example_count)
+            avg_words_in_add = (words_in_add_count / example_count)
+            print("avg_words_in_question:", avg_words_in_question)
+            print("avg_words_in_add:", avg_words_in_add)
 
         os.makedirs(training_args.output_dir, exist_ok=True)
 
